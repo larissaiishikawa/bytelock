@@ -56,9 +56,11 @@ const StrengthMeter = ({ password }: StrengthMeterProps) => {
         ))}
       </div>
       <p className="text-xs text-muted-foreground font-mono transition-opacity duration-300">
-        {score <= 1 && "Add more character types and length for better security."}
-        {score === 2 && "Good, but a longer password with more variety is safer."}
-        {score === 3 && "Excellent! This password is very strong."}
+        {score <= 1
+          ? "Add more character types and length for better security."
+          : score === 2
+          ? "Good, but a longer password with more variety is safer."
+          : "Excellent! This password is very strong."}
       </p>
     </div>
   );
