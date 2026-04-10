@@ -68,7 +68,6 @@ const GeneratorCard = () => {
     setPassword(generatePassword(settings));
   }, [settings]);
 
-  // Only auto-regenerate when settings change AND user is not manually editing
   useEffect(() => {
     if (!isEditingRef.current) {
       regenerate();
@@ -79,7 +78,6 @@ const GeneratorCard = () => {
     isEditingRef.current = true;
     setPassword(newPassword);
 
-    // Sync settings from the edited password
     const detected = detectCharTypes(newPassword);
     const clampedLength = Math.max(8, Math.min(32, newPassword.length));
 
@@ -94,29 +92,34 @@ const GeneratorCard = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 neon-glow mb-4">
-          <Shield className="w-6 h-6 text-primary" />
+    <div className="w-full max-w-md mx-auto min-h-screen flex flex-col px-4">
+      {/* Header */}
+      <div className="flex-1 flex flex-col items-center justify-end pb-6">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 neon-glow mb-5">
+          <Shield className="w-7 h-7 text-primary" />
         </div>
-        <h1 className="text-2xl font-display font-bold text-foreground tracking-tight">
-          PassForge
+        <h1 className="text-3xl font-display font-bold text-foreground tracking-tight">
+          passforge
         </h1>
-        <p className="text-sm text-muted-foreground font-mono mt-1">
-          Secure password generator
+        <p className="text-sm text-muted-foreground font-mono mt-2">
+          secure password generator
         </p>
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-6 space-y-6 neon-glow">
+      {/* Card / Form */}
+      <div className="rounded-xl border border-border bg-card p-5 space-y-4 neon-glow">
         <PasswordDisplay password={password} onRegenerate={regenerate} onPasswordEdit={handlePasswordEdit} />
         <StrengthMeter password={password} />
         <div className="h-px bg-border" />
         <Controls settings={settings} onChange={(s) => { isEditingRef.current = false; setSettings(s); }} />
       </div>
 
-      <p className="text-center text-xs text-muted-foreground font-mono mt-6">
-        Passwords are generated locally. Nothing leaves your browser.
-      </p>
+      {/* Footer */}
+      <div className="flex-1 flex items-start justify-center pt-6">
+        <p className="text-center text-xs text-muted-foreground font-mono">
+          passwords are generated locally. nothing leaves your browser.
+        </p>
+      </div>
     </div>
   );
 };
