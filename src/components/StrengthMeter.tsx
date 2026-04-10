@@ -3,7 +3,7 @@ interface StrengthMeterProps {
 }
 
 function analyzePassword(password: string): { score: number; label: string } {
-  if (!password) return { score: 0, label: "None" };
+  if (!password) return { score: 0, label: "none" };
 
   let score = 0;
   const len = password.length;
@@ -17,9 +17,9 @@ function analyzePassword(password: string): { score: number; label: string } {
   if (/[0-9]/.test(password)) score += 1;
   if (/[^A-Za-z0-9]/.test(password)) score += 1;
 
-  if (score <= 2) return { score: 1, label: "Weak" };
-  if (score <= 4) return { score: 2, label: "Medium" };
-  return { score: 3, label: "Strong" };
+  if (score <= 2) return { score: 1, label: "weak" };
+  if (score <= 4) return { score: 2, label: "medium" };
+  return { score: 3, label: "strong" };
 }
 
 const colors: Record<number, string> = {
@@ -40,27 +40,27 @@ const StrengthMeter = ({ password }: StrengthMeterProps) => {
   const { score, label } = analyzePassword(password);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <div className="flex justify-between items-center">
-        <span className="text-xs text-muted-foreground font-mono">Strength</span>
-        <span className={`text-xs font-mono font-semibold transition-colors duration-300 ${textColors[score]}`}>{label}</span>
+        <span className="text-[10px] text-muted-foreground font-mono">strength</span>
+        <span className={`text-[10px] font-mono font-semibold transition-colors duration-300 ${textColors[score]}`}>{label}</span>
       </div>
       <div className="flex gap-1.5">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className={`h-1.5 flex-1 rounded-full transition-all duration-500 ease-out ${
+            className={`h-1 flex-1 rounded-full transition-all duration-500 ease-out ${
               i <= score ? colors[score] : "bg-secondary"
             }`}
           />
         ))}
       </div>
-      <p className="text-xs text-muted-foreground font-mono transition-opacity duration-300">
+      <p className="text-[10px] text-muted-foreground font-mono transition-opacity duration-300">
         {score <= 1
-          ? "Add more character types and length for better security."
+          ? "add more character types and length for better security."
           : score === 2
-          ? "Good, but a longer password with more variety is safer."
-          : "Excellent! This password is very strong."}
+          ? "good, but a longer password with more variety is safer."
+          : "excellent! this password is very strong."}
       </p>
     </div>
   );
