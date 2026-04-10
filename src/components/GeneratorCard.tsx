@@ -99,7 +99,7 @@ const GeneratorCard = () => {
           <Shield className="w-7 h-7 text-primary" />
         </div>
         <h1 className="text-3xl font-display font-bold text-foreground tracking-tight">
-          passforge
+          bytelock
         </h1>
         <p className="text-sm text-muted-foreground font-mono mt-2">
           secure password generator
@@ -116,8 +116,10 @@ const GeneratorCard = () => {
 
       {/* Footer */}
       <div className="flex-1 flex items-start justify-center pt-6">
-        <p className="text-center text-xs text-muted-foreground font-mono">
-          passwords are generated locally. nothing leaves your browser.
+        <p className="text-center text-xs text-muted-foreground font-mono leading-relaxed">
+          passwords are generated locally.
+          <br />
+          nothing leaves your browser.
         </p>
       </div>
     </div>
