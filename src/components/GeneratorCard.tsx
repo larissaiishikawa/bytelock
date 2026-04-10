@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Shield } from "lucide-react";
 import PasswordDisplay from "./PasswordDisplay";
 import Controls, { type PasswordSettings } from "./Controls";
@@ -33,13 +33,21 @@ function generatePassword(settings: PasswordSettings): string {
 
   const result = Array.from(arr, (v) => chars[v % chars.length]);
 
-  // Place required chars at random positions
   for (let i = 0; i < required.length && i < length; i++) {
     const pos = arr[i] % length;
     result[pos] = required[i];
   }
 
   return result.join("");
+}
+
+function detectCharTypes(password: string) {
+  return {
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    numbers: /[0-9]/.test(password),
+    symbols: /[^A-Za-z0-9]/.test(password),
+  };
 }
 
 const GeneratorCard = () => {
@@ -53,14 +61,37 @@ const GeneratorCard = () => {
   });
 
   const [password, setPassword] = useState("");
+  const isEditingRef = useRef(false);
 
   const regenerate = useCallback(() => {
+    isEditingRef.current = false;
     setPassword(generatePassword(settings));
   }, [settings]);
 
+  // Only auto-regenerate when settings change AND user is not manually editing
   useEffect(() => {
-    regenerate();
+    if (!isEditingRef.current) {
+      regenerate();
+    }
   }, [regenerate]);
+
+  const handlePasswordEdit = (newPassword: string) => {
+    isEditingRef.current = true;
+    setPassword(newPassword);
+
+    // Sync settings from the edited password
+    const detected = detectCharTypes(newPassword);
+    const clampedLength = Math.max(8, Math.min(32, newPassword.length));
+
+    setSettings((prev) => ({
+      ...prev,
+      length: clampedLength,
+      uppercase: detected.uppercase,
+      lowercase: detected.lowercase,
+      numbers: detected.numbers,
+      symbols: detected.symbols,
+    }));
+  };
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -77,10 +108,10 @@ const GeneratorCard = () => {
       </div>
 
       <div className="rounded-xl border border-border bg-card p-6 space-y-6 neon-glow">
-        <PasswordDisplay password={password} onRegenerate={regenerate} />
-        <StrengthMeter password={password} settings={settings} />
+        <PasswordDisplay password={password} onRegenerate={regenerate} onPasswordEdit={handlePasswordEdit} />
+        <StrengthMeter password={password} />
         <div className="h-px bg-border" />
-        <Controls settings={settings} onChange={setSettings} />
+        <Controls settings={settings} onChange={(s) => { isEditingRef.current = false; setSettings(s); }} />
       </div>
 
       <p className="text-center text-xs text-muted-foreground font-mono mt-6">
